@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { Server } from "socket.io"; // socket
+import path from "path";
 
 
 const app = express();
@@ -10,9 +11,13 @@ const server = app.listen(port , ()=>{console.log("The server is running on "+ p
 app.use(bodyParser.json());
 app.use(cors());
 
+
+app.use(express.static(path.join(__dirname,"./../frontend")));
+/*
 app.get("/",(req,res)=>{
     res.json({"msg":"this root is available"});
 });
+*/
 
 
 // websocket server
@@ -27,5 +32,6 @@ io.on("connection",(client)=>{
 
     client.on("message",(msg)=>{
         client.broadcast.emit("message",msg);
+        console.log(msg);
     });
 });
