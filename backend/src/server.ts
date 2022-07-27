@@ -10,14 +10,22 @@ const server = app.listen(port , ()=>{console.log("The server is running on "+ p
 app.use(bodyParser.json());
 app.use(cors());
 
-const io = new Server(server);
-
-let counter = 1;
-io.on("connection",(client)=>{
-    console.log("client " + counter + " is connected");
-    counter++;
-    client.emit("reply","hello client");
-});
 app.get("/",(req,res)=>{
     res.json({"msg":"this root is available"});
+});
+
+
+// websocket server
+const io = new Server(server);
+
+io.on("connection",(client)=>{
+    console.log("client joined");
+    
+    client.on("disconnect",()=>{
+        console.log("client left");
+    });
+
+    client.on("message",(msg)=>{
+        client.broadcast.emit("message",msg);
+    });
 });
