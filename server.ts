@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 
-app.use(express.static(path.join(__dirname,"./../frontend")));
+app.use(express.static(path.join(__dirname,"./client side")));
 /*
 app.get("/",(req,res)=>{
     res.json({"msg":"this root is available"});
@@ -31,7 +31,12 @@ io.on("connection",(client)=>{
     });
 
     client.on("message",(msg)=>{
-        client.broadcast.emit("message",msg);
+        io.emit("message",msg);
         console.log(msg);
+    });
+
+    client.on("join",(msg)=>{
+        client.broadcast.emit("join",msg);
+        console.log("client joined room");
     });
 });
