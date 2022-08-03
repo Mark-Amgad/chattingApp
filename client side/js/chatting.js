@@ -1,40 +1,42 @@
 import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
-import { addMessageToDOM,getMessage } from "./functions.js";
+import { addMessageToDOM,getMessage,addUserToDom, removeUserFromDom } from "./functions.js";
 
 let userName = new URLSearchParams(window.location.search).get("username");
-// handle userName issue
-console.log(userName);
 const clientSocket = io();// connection
-const sendMessage = (event,msg)=>{
-    clientSocket.emit(event,msg);
-};
-
-const recieveMessage = (eventName,action)=>{
-    clientSocket.on(eventName,(msg)=>{
-        action(msg);
-    });
-}
 
 
 
-recieveMessage("message",(msg)=>{
+
+
+clientSocket.on("myJoin",(users)=>{
+    for(let i = 0;i < users.length;i++)
+    {
+        addUserToDom(users[i][1]);
+    }
+});
+
+
+clientSocket.on("join",(userName)=>{
+    addUserToDom(userName);
+});
+
+
+
+clientSocket.on("message",(userName,msg)=>{
     addMessageToDOM(userName,msg);
 });
 
-recieveMessage("join",(msg)=>{
-    console.log(msg);
-});
 
 
-sendMessage("join","I joined");
+
+clientSocket.emit("join",userName);
 const sendBtn = document.querySelector("#send_btn");
 sendBtn.addEventListener("click",(e)=>{
     e.preventDefault();
     const msg = getMessage();
-    sendMessage("message",msg);
+    clientSocket.emit("message",userName,msg);
 });
 
-// on submit -> get the message from dom -> send it to the server
-
-
-// when recieve a message -> change the dom (add message)
+clientSocket.on("removeUser",(userName)=>{
+    removeUserFromDom(userName);
+});

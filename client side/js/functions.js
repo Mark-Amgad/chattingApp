@@ -25,3 +25,22 @@ export const addMessageToDOM = (userName,msg)=>{
     divChatField.appendChild(divMessage);
 };
 
+export const addUserToDom = (userName)=>{
+    let usersField = document.querySelector("#users");
+    let userLi = document.createElement("li");
+    userLi.innerHTML = userName;
+    usersField.appendChild(userLi);
+}
+
+export const removeUserFromDom = (userName) =>{
+    let usersField = document.querySelector("#users");
+    for(let i = 0 ; i < usersField.children.length;i++)
+    {
+        if(usersField.children[i].innerHTML === userName)
+        {
+            usersField.removeChild(usersField.children[i]);
+            break;
+        }
+    }
+}
+

@@ -20,7 +20,9 @@ app.get("/",(req,res)=>{
     res.json({"msg":"this root is available"});
 });
 
+// users storage
 
+let users = Array();
 
 // websocket server
 const io = new Server(server);
@@ -29,16 +31,29 @@ io.on("connection",(client)=>{
     console.log("client joined");
     
     client.on("disconnect",()=>{
+        let userNameToRemove = "";
+        for(let i = 0 ; i<users.length;i++)
+        {
+            if(users[i][0] === client.id)
+            {
+                userNameToRemove = users[i][1];
+                users.splice(i,1);
+                break;
+            }
+        }
+        io.emit("removeUser",userNameToRemove);
         console.log("client left");
     });
 
-    client.on("message",(msg)=>{
-        io.emit("message",msg);
-        console.log(msg);
+    client.on("message",(userName,msg)=>{
+        io.emit("message",userName,msg);
+        console.log(userName + " : " +msg);
     });
 
-    client.on("join",(msg)=>{
-        client.broadcast.emit("join",msg);
+    client.on("join",(userName)=>{
+        client.emit("myJoin",users);
+        users.push([client.id,userName]);
+        io.emit("join",userName);
         console.log("client joined room");
     });
 });
