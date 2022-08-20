@@ -24,6 +24,8 @@ clientSocket.on("join",(userName)=>{
 
 clientSocket.on("message",(userName,msg)=>{
     addMessageToDOM(userName,msg);
+    const chatMessages = document.querySelector('.chat-messages');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
 
@@ -35,6 +37,7 @@ sendBtn.addEventListener("click",(e)=>{
     e.preventDefault();
     const msg = getMessage();
     clientSocket.emit("message",userName,msg);
+    document.querySelector("#msg").value = "";
 });
 
 clientSocket.on("removeUser",(userName)=>{
