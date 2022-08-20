@@ -17,7 +17,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname,"./client side")));
 
 app.get("/",(req,res)=>{
-    res.json({"msg":"this root is available"});
+    res.redirect("/HTML_CSS/index.html");
 });
 
 // users storage
